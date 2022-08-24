@@ -1,0 +1,42 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "airbnb",
+        "airbnb-typescript",
+        "airbnb/hooks",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended",
+        "plugin:tailwindcss/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.eslint.json",
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "import",
+        "react",
+        "@typescript-eslint",
+        "prettier",
+        "tailwindcss"
+    ],
+    "rules": {
+        "react/react-in-jsx-scope": ["off"],
+        "@typescript-eslint/explicit-function-return-type": ["error"],
+        "react/function-component-definition": [
+            2,
+            {
+              "namedComponents": "arrow-function",
+              "unnamedComponents": "arrow-function"
+            }
+          ]
+    }
+}

@@ -1,37 +1,24 @@
 import { FC, useState } from 'react'
-import { useLazyGetExchangeInfoQuery } from '../../api/exchangeInfoApi'
-import { useLazyGetSymbolsStatsMiniQuery } from '../../api/symbolStatsApi'
+import { useLazyGetAllSymbolsStatsQuery } from '../../api/symbolStatsApi'
 import SymbolsTable from '../SymbolsTable'
 
 const SymbolsSettings: FC = () => {
   const [symbolsStats, setSymbolsStats] = useState<{ symbol: string; volume: string }[]>([])
-
-  const [getExchangeInfo] = useLazyGetExchangeInfoQuery()
-  const [getSymbolStats] = useLazyGetSymbolsStatsMiniQuery()
+  const [getAllSymbolsStats] = useLazyGetAllSymbolsStatsQuery()
 
   const handleUpdateVolumes = async (): Promise<void> => {
-    // parse all symbols
-    const { data: exchangeInfo } = await getExchangeInfo()
+    const { data: symbols } = await getAllSymbolsStats()
 
-    // filter full symbols data to USDT tickers only
-    if (exchangeInfo) {
-      const symbolsUSDT = exchangeInfo.symbols
-        .filter((symbol) => symbol.quoteAsset === 'USDT')
-        .map((symbol) => symbol.symbol)
+    if (symbols) {
+      const result = [...symbols]
+        .map((symbol) => ({
+          symbol: symbol.symbol,
+          volume: symbol.quoteVolume,
+        }))
+        .filter((symbol) => symbol.symbol.match(/\b\w+USDT\b/g))
+        .sort((a, b) => +b.volume - +a.volume)
 
-      // parse volume
-      if (symbolsUSDT.length) {
-        const { data: currentStats } = await getSymbolStats(symbolsUSDT)
-
-        // push sorted tickers to state
-        if (currentStats) {
-          const currentStatsSorted = [...currentStats]
-            .sort((a, b) => +b.quoteVolume - +a.quoteVolume)
-            .map((stats) => ({ symbol: stats.symbol, volume: stats.quoteVolume }))
-
-          setSymbolsStats(currentStatsSorted)
-        }
-      }
+      setSymbolsStats(result)
     }
   }
 

@@ -1,38 +1,28 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BinanceEndpoints } from './BinanceEndpoints'
-import {
-  SymbolStatsType,
-  SymbolStatsResponseFull,
-  SymbolStatsResponseMini,
-} from '../types/SymbolStats'
+import { SymbolStatsResponseFull } from '../types/SymbolStats'
 
 export const symbolStatsApi = createApi({
   reducerPath: 'tickerStats',
   baseQuery: fetchBaseQuery({ baseUrl: BinanceEndpoints.TICKER_STATS_24H }),
   endpoints: (builder) => ({
-    getSymbolStatsMini: builder.query<SymbolStatsResponseMini, string>({
-      query: (symbol) => `?symbol=${symbol}&type=${SymbolStatsType.MINI}`,
+    getAllSymbolsStats: builder.query<SymbolStatsResponseFull[], void>({
+      query: () => '',
     }),
-    getSymbolStatsFull: builder.query<SymbolStatsResponseFull, string>({
-      query: (symbol) => `?symbol=${symbol}&type=${SymbolStatsType.FULL}`,
+    getSymbolStats: builder.query<SymbolStatsResponseFull, string>({
+      query: (symbol) => `?symbol=${symbol}`,
     }),
-    getSymbolsStatsMini: builder.query<SymbolStatsResponseMini[], string[]>({
-      query: (symbols) => `?symbols=${encodeURI(JSON.stringify(symbols))}`,
-    }),
-    getSymbolsStatsFull: builder.query<SymbolStatsResponseFull[], string[]>({
-      query: (symbols) =>
-        `?symbols=${encodeURI(JSON.stringify(symbols))}&type=${SymbolStatsType.FULL}`,
+    getSymbolsStats: builder.query<SymbolStatsResponseFull[], string[]>({
+      query: (symbols) => `?symbols=${encodeURI(JSON.stringify(symbols))} `,
     }),
   }),
 })
 
 export const {
-  useGetSymbolStatsFullQuery,
-  useGetSymbolStatsMiniQuery,
-  useGetSymbolsStatsFullQuery,
-  useGetSymbolsStatsMiniQuery,
-  useLazyGetSymbolStatsFullQuery,
-  useLazyGetSymbolStatsMiniQuery,
-  useLazyGetSymbolsStatsFullQuery,
-  useLazyGetSymbolsStatsMiniQuery,
+  useGetAllSymbolsStatsQuery,
+  useLazyGetAllSymbolsStatsQuery,
+  useGetSymbolStatsQuery,
+  useGetSymbolsStatsQuery,
+  useLazyGetSymbolStatsQuery,
+  useLazyGetSymbolsStatsQuery,
 } = symbolStatsApi

@@ -38,6 +38,7 @@ const SymbolsSettings: FC = () => {
   return (
     <div className="flex flex-col items-center gap-3">
       <SymbolsTable symbols={symbolsStats} />
+      <p className="text-base text-gray-400">Total count: {symbolsStats.length}</p>
       <div className="flex flex-col gap-3">
         <label htmlFor="min-vol" className="flex items-center gap-2 text-base">
           <input

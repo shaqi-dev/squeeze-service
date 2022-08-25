@@ -1,46 +1,41 @@
 /* eslint-disable react/jsx-key */
 import { FC, useMemo } from 'react'
 import { Column, useTable } from 'react-table'
-import { useLazyGetExchangeInfoQuery } from '../../api/exchangeInfoApi'
-// import SymbolItem from './SymbolItem/SymbolItem'
+import { convertVolume } from '../../utils/convertVolume'
 
-const SymbolsList: FC = () => {
-  const [getExchangeInfo, { data: exchangeInfo }] = useLazyGetExchangeInfoQuery()
-  const symbolsData = exchangeInfo?.symbols
-  const symbols = symbolsData?.map((symbol) => symbol.symbol)
+interface SymbolsTableProps {
+  symbols: { symbol: string; volume: string }[]
+}
 
-  const columns = useMemo<Column<{ col1: string; col2: string | undefined }>[]>(
+const SymbolsTable: FC<SymbolsTableProps> = ({ symbols }) => {
+  const columns = useMemo<Column<typeof symbols[0]>[]>(
     () => [
       {
         Header: 'Symbol',
-        accessor: 'col1',
+        accessor: 'symbol',
       },
       {
         Header: 'Volume',
-        accessor: 'col2',
+        accessor: 'volume',
       },
     ],
     [],
   )
   const data = useMemo(() => {
-    if (symbols) {
-      return symbols?.map((symbol) => ({
-        col1: symbol,
-        col2: '',
+    if (symbols.length) {
+      return symbols.map((symbol) => ({
+        symbol: symbol.symbol,
+        volume: convertVolume(parseInt(symbol.volume, 10)),
       }))
     }
 
-    return [{ col1: 'No data :(', col2: '' }]
+    return [{ symbol: 'No data :(', volume: 'No data :(' }]
   }, [symbols])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
   })
-
-  const handleUpdateExchangeInfo = (): ReturnType<typeof getExchangeInfo> => getExchangeInfo()
-
-  const handleUpdateVolumes = (): void => console.log(test)
 
   return (
     <div className="flex flex-col items-center justify-center gap-3">
@@ -81,24 +76,8 @@ const SymbolsList: FC = () => {
           </tbody>
         </table>
       </div>
-      <div className="flex gap-3">
-        <button
-          type="button"
-          className="rounded-md bg-neutral-900 py-2 px-4 text-base font-semibold text-white transition-all duration-100 hover:bg-neutral-800"
-          onClick={handleUpdateExchangeInfo}
-        >
-          Load Symbols
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-neutral-900 py-2 px-4 text-base font-semibold text-white transition-all duration-100 hover:bg-neutral-800"
-          onClick={handleUpdateVolumes}
-        >
-          Load Volume
-        </button>
-      </div>
     </div>
   )
 }
 
-export default SymbolsList
+export default SymbolsTable

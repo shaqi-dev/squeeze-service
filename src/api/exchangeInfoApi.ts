@@ -22,7 +22,7 @@ export const exchangeInfoApi = createApi({
       query: (symbol) => `?symbol=${symbol}`,
     }),
     getSymbolsInfo: builder.query<ExchangeInfoResponse, string[]>({
-      query: (symbols) => `?symbol=${encodeURIComponent(symbols.join(','))}`,
+      query: (symbols) => `?symbols=${encodeURI(JSON.stringify(symbols))}`,
     }),
   }),
 })

@@ -1,9 +1,9 @@
 import { FC } from 'react'
-import { useGetSymbolInfoQuery } from './api/exchangeInfoApi'
+import { useGetSymbolsInfoQuery } from './api/exchangeInfoApi'
 import './App.css'
 
 const App: FC = () => {
-  const { data } = useGetSymbolInfoQuery('BTCUSDT')
+  const { data } = useGetSymbolsInfoQuery(['BTCUSDT', 'ETHUSDT'])
   return <div className="text-sm">{JSON.stringify(data)}</div>
 }
 

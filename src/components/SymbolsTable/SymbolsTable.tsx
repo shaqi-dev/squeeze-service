@@ -7,9 +7,19 @@ interface SymbolsTableProps {
   symbols: { symbol: string; volume: string }[]
 }
 
+interface ColumnItem {
+  index: number
+  symbol: string
+  volume: string
+}
+
 const SymbolsTable: FC<SymbolsTableProps> = ({ symbols }) => {
-  const columns = useMemo<Column<typeof symbols[0]>[]>(
+  const columns = useMemo<Column<ColumnItem>[]>(
     () => [
+      {
+        Header: '#',
+        accessor: 'index',
+      },
       {
         Header: 'Symbol',
         accessor: 'symbol',
@@ -23,13 +33,14 @@ const SymbolsTable: FC<SymbolsTableProps> = ({ symbols }) => {
   )
   const data = useMemo(() => {
     if (symbols.length) {
-      return symbols.map((symbol) => ({
+      return symbols.map((symbol, index) => ({
+        index: index + 1,
         symbol: symbol.symbol,
         volume: convertVolume(parseInt(symbol.volume, 10)),
       }))
     }
 
-    return [{ symbol: 'No data :(', volume: 'No data :(' }]
+    return [{ index: 1, symbol: 'No data :(', volume: 'No data :(' }]
   }, [symbols])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({

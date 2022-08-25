@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/reduxHelpers'
 import { setSymbols, setMinVolume, selectSymbolsSettings } from '../../redux/symbolsSettingsSlice'
 import SymbolsTable from '../SymbolsTable'
 import { SymbolStatsResponseFull } from '../../types/SymbolStats'
+import InputText from '../InputText'
 
 const SymbolsSettings: FC = () => {
   const dispatch = useAppDispatch()
@@ -70,11 +71,10 @@ const SymbolsSettings: FC = () => {
             onChange={(): void => setMinVolumeFilter(!minVolumeFilter)}
           />
           Minimal volume, m.:
-          <input
-            type="text"
-            className="w-20 rounded-md border border-neutral-900 py-2 px-4 text-base disabled:border-neutral-400 disabled:bg-gray-200 disabled:text-gray-500"
+          <InputText
             disabled={!minVolumeFilter}
             defaultValue={minVolume ? `${minVolume}` : ''}
+            className="w-[70px]"
             onChange={handleChangeMinVolume}
           />
         </label>

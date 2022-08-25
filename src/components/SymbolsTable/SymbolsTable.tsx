@@ -2,15 +2,14 @@
 import { FC, useMemo } from 'react'
 import { Column, useTable } from 'react-table'
 import { convertVolume } from '../../utils/convertVolume'
+import { SymbolStatsShort } from '../../types/SymbolStats'
 
 interface SymbolsTableProps {
-  symbols: { symbol: string; volume: string }[]
+  symbols: SymbolStatsShort[]
 }
 
-interface ColumnItem {
+interface ColumnItem extends SymbolStatsShort {
   index: number
-  symbol: string
-  volume: string
 }
 
 const SymbolsTable: FC<SymbolsTableProps> = ({ symbols }) => {

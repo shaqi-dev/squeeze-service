@@ -41,3 +41,8 @@ export interface SymbolStatsResponseMini {
   lastId: number // Last tradeId considered
   count: number // Total trade count
 }
+
+export interface SymbolStatsShort {
+  symbol: string
+  volume: string
+}

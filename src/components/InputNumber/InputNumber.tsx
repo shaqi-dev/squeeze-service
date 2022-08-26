@@ -4,7 +4,6 @@ interface InputTextProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 export type Ref = HTMLInputElement
 
-// eslint-disable-next-line react/display-name
 const InputNumber = forwardRef<Ref, InputTextProps>(({ className, ...props }, ref) => {
   return (
     <input
@@ -18,5 +17,7 @@ const InputNumber = forwardRef<Ref, InputTextProps>(({ className, ...props }, re
     />
   )
 })
+
+InputNumber.displayName = 'InputNumber'
 
 export default InputNumber

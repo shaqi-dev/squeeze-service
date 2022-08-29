@@ -1,10 +1,12 @@
 import { FC, useState, useEffect, useCallback } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import InputNumber from '../InputNumber'
+import InputText from '../InputText'
 import { countSettings } from '../../utils/countSettings'
 import { createConfigs } from '../../utils/createConfigs'
 
 export interface ConfigsSettingsForm {
+  name: string
   buyFrom: number
   buyTo: number
   buyStep: number
@@ -19,7 +21,12 @@ export interface ConfigsSettingsForm {
 const ConfigsSettings: FC = () => {
   const [configsCount, setConfigsCount] = useState(0)
 
-  const { register, watch, handleSubmit } = useForm<ConfigsSettingsForm>()
+  const {
+    register,
+    watch,
+    formState: { isValid },
+    handleSubmit,
+  } = useForm<ConfigsSettingsForm>()
   const watchInputs = watch()
 
   const updateConfigsCount = useCallback((): void => {
@@ -44,15 +51,18 @@ const ConfigsSettings: FC = () => {
   }, [watch, updateConfigsCount])
 
   const onSubmit: SubmitHandler<ConfigsSettingsForm> = (data): void => {
-    const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } = data
+    if (isValid && configsCount > 0) {
+      const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } =
+        data
 
-    const settings = {
-      buy: { from: buyFrom, to: buyTo, step: buyStep },
-      sell: { from: sellFrom, to: sellTo, step: sellStep },
-      stop: { from: stopFrom, to: stopTo, step: stopStep },
+      const settings = {
+        buy: { from: buyFrom, to: buyTo, step: buyStep },
+        sell: { from: sellFrom, to: sellTo, step: sellStep },
+        stop: { from: stopFrom, to: stopTo, step: stopStep },
+      }
+
+      createConfigs(settings)
     }
-
-    createConfigs(settings)
   }
 
   const inputWidth = 'w-24'
@@ -64,6 +74,9 @@ const ConfigsSettings: FC = () => {
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="text-center text-xl font-bold">Configs Settings</h3>
+
+      <span className="text-lg font-medium">Config name: </span>
+      <InputText {...register('name', { required: true })} autoComplete="off" />
 
       <div className="grid h-fit grid-cols-4 text-base">
         <span className={`${gridItemStyle} bg-slate-200 font-medium`}>Setting</span>

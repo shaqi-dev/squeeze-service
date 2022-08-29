@@ -1,5 +1,7 @@
 import { FC, useState, useEffect, useCallback } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHelpers'
+import { addConfig, selectConfigs } from '../../redux/configsSlice'
 import InputNumber from '../InputNumber'
 import InputText from '../InputText'
 import { countSettings } from '../../utils/countSettings'
@@ -19,6 +21,8 @@ export interface ConfigsSettingsForm {
 }
 
 const ConfigsSettings: FC = () => {
+  const dispatch = useAppDispatch()
+  const configs = useAppSelector(selectConfigs)
   const [configsCount, setConfigsCount] = useState(0)
 
   const {
@@ -26,7 +30,7 @@ const ConfigsSettings: FC = () => {
     watch,
     formState: { isValid },
     handleSubmit,
-  } = useForm<ConfigsSettingsForm>()
+  } = useForm<ConfigsSettingsForm>({ mode: 'onChange' })
   const watchInputs = watch()
 
   const updateConfigsCount = useCallback((): void => {
@@ -52,8 +56,18 @@ const ConfigsSettings: FC = () => {
 
   const onSubmit: SubmitHandler<ConfigsSettingsForm> = (data): void => {
     if (isValid && configsCount > 0) {
-      const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } =
-        data
+      const {
+        name,
+        buyFrom,
+        buyTo,
+        buyStep,
+        sellFrom,
+        sellTo,
+        sellStep,
+        stopFrom,
+        stopTo,
+        stopStep,
+      } = data
 
       const settings = {
         buy: { from: buyFrom, to: buyTo, step: buyStep },
@@ -61,7 +75,12 @@ const ConfigsSettings: FC = () => {
         stop: { from: stopFrom, to: stopTo, step: stopStep },
       }
 
-      createConfigs(settings)
+      const configItem = {
+        name,
+        configs: createConfigs(settings),
+      }
+
+      dispatch(addConfig(configItem))
     }
   }
 
@@ -159,6 +178,9 @@ const ConfigsSettings: FC = () => {
         value="Create configs"
         className="w-full cursor-pointer rounded-md bg-neutral-900 py-2 px-4 text-base font-medium text-white hover:bg-neutral-800"
       />
+
+      {!!configs.length &&
+        configs.map((config) => <p key={`config-${config.name}`}>{config.name}</p>)}
     </form>
   )
 }

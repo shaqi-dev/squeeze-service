@@ -1,6 +1,7 @@
 import { FC, useState, useRef, FormEventHandler } from 'react'
 import InputNumber from '../InputNumber'
 import { countSettings } from '../../utils/countSettings'
+import { createConfigs } from '../../utils/createConfigs'
 
 const ConfigsSettings: FC = () => {
   const inputWidth = 'w-24'
@@ -19,8 +20,27 @@ const ConfigsSettings: FC = () => {
   const stopTo = useRef<HTMLInputElement>(null)
   const stopStep = useRef<HTMLInputElement>(null)
 
+  const settings = {
+    buy: {
+      from: Number(buyFrom.current?.value),
+      to: Number(buyTo.current?.value),
+      step: Number(buyStep.current?.value),
+    },
+    sell: {
+      from: Number(sellFrom.current?.value),
+      to: Number(sellTo.current?.value),
+      step: Number(sellStep.current?.value),
+    },
+    stop: {
+      from: Number(stopFrom.current?.value),
+      to: Number(stopTo.current?.value),
+      step: Number(stopStep.current?.value),
+    },
+  }
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e): void => {
     e.preventDefault()
+    createConfigs(settings)
   }
 
   const handleChangeForm = (): void => {
@@ -77,18 +97,21 @@ const ConfigsSettings: FC = () => {
           className={`${inputWidth} ${gridItemStyle} bg-blue-100`}
           step={inputStep}
           defaultValue={3}
+          min={0}
         />
         <InputNumber
           ref={buyTo}
           className={`${inputWidth} ${gridItemStyle} bg-blue-100`}
           step={inputStep}
           defaultValue={5}
+          min={0}
         />
         <InputNumber
           ref={buyStep}
           className={`${inputWidth} ${gridItemStyle} bg-blue-100`}
           step={inputStep}
           defaultValue={0.2}
+          min={0}
         />
 
         <span className={`${gridItemStyle} bg-purple-100 font-medium`}>Sell</span>
@@ -97,18 +120,21 @@ const ConfigsSettings: FC = () => {
           className={`${inputWidth} ${gridItemStyle} bg-purple-100`}
           step={inputStep}
           defaultValue={1}
+          min={0}
         />
         <InputNumber
           ref={sellTo}
           className={`${inputWidth} ${gridItemStyle} bg-purple-100`}
           step={inputStep}
           defaultValue={2.5}
+          min={0}
         />
         <InputNumber
           ref={sellStep}
           className={`${inputWidth} ${gridItemStyle} bg-purple-100`}
           step={inputStep}
           defaultValue={0.2}
+          min={0}
         />
 
         <span className={`${gridItemStyle} bg-red-100 font-medium`}>Stop</span>
@@ -117,18 +143,21 @@ const ConfigsSettings: FC = () => {
           className={`${inputWidth} ${gridItemStyle} bg-red-100`}
           step={inputStep}
           defaultValue={2}
+          min={0}
         />
         <InputNumber
           ref={stopTo}
           className={`${inputWidth} ${gridItemStyle} bg-red-100`}
           step={inputStep}
           defaultValue={3.5}
+          min={0}
         />
         <InputNumber
           ref={stopStep}
           className={`${inputWidth} ${gridItemStyle} bg-red-100`}
           step={inputStep}
           defaultValue={0.2}
+          min={0}
         />
       </div>
       <p className="text-center text-base text-gray-400">Total configs: {configsCount}</p>

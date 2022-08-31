@@ -30,6 +30,7 @@ const ConfigsSettings: FC = () => {
     watch,
     formState: { isValid },
     handleSubmit,
+    reset,
   } = useForm<ConfigsSettingsForm>({ mode: 'onChange' })
   const watchInputs = watch()
 
@@ -81,6 +82,8 @@ const ConfigsSettings: FC = () => {
       }
 
       dispatch(addConfig(configItem))
+
+      reset({ name: '' })
     }
   }
 

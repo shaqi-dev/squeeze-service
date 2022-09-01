@@ -37,8 +37,6 @@ const ConfigsSettings: FC = () => {
   const dispatch = useAppDispatch()
   const configs = useAppSelector(selectConfigs)
 
-  console.log(configs)
-
   const [configsCount, setConfigsCount] = useState(0)
   const [mode, setMode] = useState<ConfigsSettingsMode>(ConfigsSettingsMode.CREATE)
   const [selectedConfig, setSelectedConfig] = useState<UniqueConfigItem | null>(null)

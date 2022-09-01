@@ -56,16 +56,14 @@ const SymbolsTable: FC<SymbolsTableProps> = ({ symbols, isLoading }) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-3">
+      <p className="text-lg font-bold">Symbols Settings</p>
       <div className="max-h-96 w-fit overflow-auto">
         <table {...getTableProps()} className="h-96 border-neutral-900 shadow-sm">
-          <thead className="sticky top-0 z-10 border-2 border-solid border-neutral-900 bg-white">
+          <thead className="sticky top-0 z-10 border border-neutral-900 bg-white">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
-                  <th
-                    {...column.getHeaderProps()}
-                    className="border-2 border-solid border-neutral-900 py-1 px-3"
-                  >
+                  <th {...column.getHeaderProps()} className="border border-neutral-900 py-1 px-3">
                     {column.render('Header')}
                   </th>
                 ))}
@@ -79,10 +77,7 @@ const SymbolsTable: FC<SymbolsTableProps> = ({ symbols, isLoading }) => {
                 <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
-                      <td
-                        {...cell.getCellProps()}
-                        className="border-2 border-solid border-neutral-900 py-1 px-3"
-                      >
+                      <td {...cell.getCellProps()} className="border border-neutral-900 py-1 px-3">
                         {cell.render('Cell')}
                       </td>
                     )

@@ -33,6 +33,19 @@ enum ConfigsSettingsMode {
   UPDATE,
 }
 
+const defaultConfigsSettings = {
+  name: 'Standard',
+  buyFrom: 3,
+  buyTo: 5,
+  buyStep: 0.2,
+  sellFrom: 1,
+  sellTo: 2.5,
+  sellStep: 0.2,
+  stopFrom: 1,
+  stopTo: 3,
+  stopStep: 0.2,
+}
+
 const ConfigsSettings: FC = () => {
   const dispatch = useAppDispatch()
   const configs = useAppSelector(selectConfigs)
@@ -71,6 +84,26 @@ const ConfigsSettings: FC = () => {
     updateConfigsCount()
   }, [watch, updateConfigsCount])
 
+  useEffect(() => {
+    if (!configs.length) {
+      const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } =
+        defaultConfigsSettings
+
+      const settings: ConfigSettings = {
+        buy: { from: buyFrom, to: buyTo, step: buyStep },
+        sell: { from: sellFrom, to: sellTo, step: sellStep },
+        stop: { from: stopFrom, to: stopTo, step: stopStep },
+      }
+
+      const configItem: ConfigItem = {
+        data: defaultConfigsSettings,
+        configs: createConfigs(settings),
+      }
+
+      dispatch(addConfig(configItem))
+    }
+  }, [configs.length, dispatch])
+
   const onSubmit: SubmitHandler<ConfigsSettingsFormInputs> = (data): void => {
     if (isValid && configsCount > 0) {
       const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } =
@@ -106,10 +139,6 @@ const ConfigsSettings: FC = () => {
     reset({ name: '' })
   }
 
-  const handleClickConfig = (config: UniqueConfigItem): void => {
-    console.log(config)
-  }
-
   const handleUpdateConfig = (config: UniqueConfigItem): void => {
     reset(config.data)
     setMode(ConfigsSettingsMode.UPDATE)
@@ -117,11 +146,13 @@ const ConfigsSettings: FC = () => {
   }
 
   const handleDeleteConfig = (config: UniqueConfigItem): void => {
-    if (selectedConfig?.id === config.id) {
-      handleCancelUpdate()
-    }
+    if (configs.length > 1) {
+      if (selectedConfig?.id === config.id) {
+        handleCancelUpdate()
+      }
 
-    dispatch(deleteConfig(config))
+      dispatch(deleteConfig(config))
+    }
   }
 
   const inputWidth = 'w-24'
@@ -149,21 +180,21 @@ const ConfigsSettings: FC = () => {
               {...register('buyFrom', { required: true, min: minPercent })}
               className={`${inputWidth} ${gridItemStyle} bg-blue-100`}
               step={inputStep}
-              defaultValue={3}
+              defaultValue={defaultConfigsSettings.buyFrom}
               min={minPercent}
             />
             <InputNumber
               {...register('buyTo', { required: true, min: minPercent })}
               className={`${inputWidth} ${gridItemStyle} bg-blue-100`}
               step={inputStep}
-              defaultValue={5}
+              defaultValue={defaultConfigsSettings.buyTo}
               min={minPercent}
             />
             <InputNumber
               {...register('buyStep', { required: true, min: minStep })}
               className={`${inputWidth} ${gridItemStyle} bg-blue-100`}
               step={inputStep}
-              defaultValue={0.2}
+              defaultValue={defaultConfigsSettings.buyStep}
               min={minStep}
             />
 
@@ -172,21 +203,21 @@ const ConfigsSettings: FC = () => {
               {...register('sellFrom', { required: true, min: minPercent })}
               className={`${inputWidth} ${gridItemStyle} bg-purple-100`}
               step={inputStep}
-              defaultValue={1}
+              defaultValue={defaultConfigsSettings.sellFrom}
               min={minPercent}
             />
             <InputNumber
               {...register('sellTo', { required: true, min: minPercent })}
               className={`${inputWidth} ${gridItemStyle} bg-purple-100`}
               step={inputStep}
-              defaultValue={2.5}
+              defaultValue={defaultConfigsSettings.sellTo}
               min={minPercent}
             />
             <InputNumber
               {...register('sellStep', { required: true, min: minStep })}
               className={`${inputWidth} ${gridItemStyle} bg-purple-100`}
               step={inputStep}
-              defaultValue={0.2}
+              defaultValue={defaultConfigsSettings.sellStep}
               min={minStep}
             />
 
@@ -195,21 +226,21 @@ const ConfigsSettings: FC = () => {
               {...register('stopFrom', { required: true, min: minPercent })}
               className={`${inputWidth} ${gridItemStyle} bg-red-100`}
               step={inputStep}
-              defaultValue={2}
+              defaultValue={defaultConfigsSettings.stopFrom}
               min={minPercent}
             />
             <InputNumber
               {...register('stopTo', { required: true, min: minPercent })}
               className={`${inputWidth} ${gridItemStyle} bg-red-100`}
               step={inputStep}
-              defaultValue={3.5}
+              defaultValue={defaultConfigsSettings.stopTo}
               min={minPercent}
             />
             <InputNumber
               {...register('stopStep', { required: true, min: minStep })}
               className={`${inputWidth} ${gridItemStyle} bg-red-100`}
               step={inputStep}
-              defaultValue={0.2}
+              defaultValue={defaultConfigsSettings.stopStep}
               min={minStep}
             />
           </div>
@@ -239,23 +270,17 @@ const ConfigsSettings: FC = () => {
                     'w-full border border-neutral-800 hover:bg-neutral-200' +
                     `${selectedConfig?.id === config.id ? ' bg-neutral-200' : ''}`
                   }
-                  onClick={(): void => handleClickConfig(config)}
+                  onClick={(): void => handleUpdateConfig(config)}
                 >
                   {config.data.name}
                 </button>
                 <button
                   type="button"
-                  className="border border-neutral-800 px-2 hover:bg-neutral-200"
-                  onClick={(): void => handleUpdateConfig(config)}
-                >
-                  U
-                </button>
-                <button
-                  type="button"
-                  className="border border-neutral-800 px-2 hover:bg-neutral-200"
+                  className="border border-neutral-800 px-2 hover:bg-neutral-200 disabled:pointer-events-none disabled:border-neutral-500 disabled:text-neutral-500"
                   onClick={(): void => handleDeleteConfig(config)}
+                  disabled={configs.length <= 1}
                 >
-                  D
+                  Delete
                 </button>
               </div>
             ))}

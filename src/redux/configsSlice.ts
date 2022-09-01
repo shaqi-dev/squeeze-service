@@ -1,33 +1,38 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Config } from '../types/Config'
+import { v4 as uuidv4 } from 'uuid'
+import type { Config } from '../types/Config'
+import type { ConfigsSettingsFormInputs } from '../components/ConfigsSettings/ConfigsSettings'
 import type { RootState } from './store'
 
 export interface ConfigItem {
-  name: string
+  data: ConfigsSettingsFormInputs
   configs: Config[]
 }
 
-const initialState: ConfigItem[] = []
+export interface UniqueConfigItem extends ConfigItem {
+  id: string
+}
+
+const initialState: UniqueConfigItem[] = []
 
 const configsSlice = createSlice({
   name: 'symbolsSettings',
   initialState,
   reducers: {
     addConfig: (state, action: PayloadAction<ConfigItem>) => {
-      state.push(action.payload)
+      return [...state, { id: uuidv4(), ...action.payload }]
     },
-    updateConfig: (state, action: PayloadAction<ConfigItem>) => {
-      const current = state.indexOf(state.filter((item) => item.name === action.payload.name)[0])
-      state[current] = action.payload
+    updateConfig: (state, action: PayloadAction<UniqueConfigItem>) => {
+      return [...state.filter((x) => x.id !== action.payload.id), action.payload]
     },
-    deleteConfig: (state, action: PayloadAction<ConfigItem>) => {
-      state = state.filter((item) => item.name !== action.payload.name)
+    deleteConfig: (state, action: PayloadAction<UniqueConfigItem>) => {
+      return [...state.filter((x) => x.id !== action.payload.id)]
     },
   },
 })
 
 export const { addConfig, updateConfig, deleteConfig } = configsSlice.actions
 
-export const selectConfigs = (state: RootState): ConfigItem[] => state.configs
+export const selectConfigs = (state: RootState): UniqueConfigItem[] => state.configs
 
 export default configsSlice.reducer

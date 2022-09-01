@@ -6,13 +6,14 @@ import { SymbolStatsShort } from '../../types/SymbolStats'
 
 interface SymbolsTableProps {
   symbols: SymbolStatsShort[]
+  isLoading: boolean
 }
 
 interface ColumnItem extends SymbolStatsShort {
   index: number
 }
 
-const SymbolsTable: FC<SymbolsTableProps> = ({ symbols }) => {
+const SymbolsTable: FC<SymbolsTableProps> = ({ symbols, isLoading }) => {
   const columns = useMemo<Column<ColumnItem>[]>(
     () => [
       {
@@ -39,8 +40,14 @@ const SymbolsTable: FC<SymbolsTableProps> = ({ symbols }) => {
       }))
     }
 
-    return [{ index: 1, symbol: 'No data :(', volume: 'No data :(' }]
-  }, [symbols])
+    return [
+      {
+        index: 1,
+        symbol: isLoading ? 'Loading...' : 'No data :(',
+        volume: isLoading ? 'Loading...' : 'No data :(',
+      },
+    ]
+  }, [symbols, isLoading])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,

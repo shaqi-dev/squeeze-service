@@ -2,18 +2,18 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { SymbolStatsShort } from '../types/SymbolStats'
 import type { RootState } from './store'
 
-export interface SymbolsSettingsState {
+export interface SymbolsState {
   symbols: SymbolStatsShort[]
   minVolume: number | null
 }
 
-const initialState: SymbolsSettingsState = {
+const initialState: SymbolsState = {
   symbols: [],
   minVolume: null,
 }
 
-const symbolsSettingsSlice = createSlice({
-  name: 'symbolsSettings',
+const symbolsSlice = createSlice({
+  name: 'symbols',
   initialState,
   reducers: {
     setSymbols: (state, action: PayloadAction<SymbolStatsShort[]>) => {
@@ -25,9 +25,8 @@ const symbolsSettingsSlice = createSlice({
   },
 })
 
-export const { setSymbols, setMinVolume } = symbolsSettingsSlice.actions
+export const { setSymbols, setMinVolume } = symbolsSlice.actions
 
-export const selectSymbolsSettings = (state: RootState): SymbolsSettingsState =>
-  state.symbolsSettings
+export const selectSymbols = (state: RootState): SymbolsState => state.symbols
 
-export default symbolsSettingsSlice.reducer
+export default symbolsSlice.reducer

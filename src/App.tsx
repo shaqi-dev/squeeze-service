@@ -1,4 +1,5 @@
 import { FC } from 'react'
+
 import SymbolsSettings from './components/SymbolsSettings'
 import ConfigsSettings from './components/ConfigsSettings'
 import TimeframeSettings from './components/TimeframeSettings'

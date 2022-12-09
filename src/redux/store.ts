@@ -1,14 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { exchangeInfoApi } from '../api/exchangeInfoApi'
 import { symbolStatsApi } from '../api/symbolStatsApi'
-import symbolsSettings from './symbolsSettingsSlice'
+import symbols from './symbolsSlice'
 import configs from './configsSlice'
 
 export const store = configureStore({
   reducer: {
     [exchangeInfoApi.reducerPath]: exchangeInfoApi.reducer,
     [symbolStatsApi.reducerPath]: symbolStatsApi.reducer,
-    symbolsSettings,
+    symbols,
     configs,
   },
   middleware: (getDefaultMiddleware) =>

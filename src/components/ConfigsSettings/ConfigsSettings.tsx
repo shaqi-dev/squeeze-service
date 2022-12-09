@@ -17,15 +17,15 @@ import InputText from '../InputText'
 
 export interface ConfigsSettingsFormInputs {
   name: string
-  buyFrom: number
-  buyTo: number
-  buyStep: number
-  sellFrom: number
-  sellTo: number
-  sellStep: number
-  stopFrom: number
-  stopTo: number
-  stopStep: number
+  buyFrom: string
+  buyTo: string
+  buyStep: string
+  sellFrom: string
+  sellTo: string
+  sellStep: string
+  stopFrom: string
+  stopTo: string
+  stopStep: string
 }
 
 enum ConfigsSettingsMode {
@@ -35,15 +35,25 @@ enum ConfigsSettingsMode {
 
 const defaultConfigsSettings = {
   name: 'Standard',
-  buyFrom: 3,
-  buyTo: 5,
-  buyStep: 0.2,
-  sellFrom: 1,
-  sellTo: 2.5,
-  sellStep: 0.2,
-  stopFrom: 1,
-  stopTo: 3,
-  stopStep: 0.2,
+  buyFrom: '3',
+  buyTo: '5',
+  buyStep: '0.2',
+  sellFrom: '1',
+  sellTo: '2.5',
+  sellStep: '0.2',
+  stopFrom: '1',
+  stopTo: '3',
+  stopStep: '0.2',
+}
+
+const convertDataToSettings = (data: ConfigsSettingsFormInputs): ConfigSettings => {
+  const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } = data
+
+  return {
+    buy: { from: +buyFrom, to: +buyTo, step: +buyStep },
+    sell: { from: +sellFrom, to: +sellTo, step: +sellStep },
+    stop: { from: +stopFrom, to: +stopTo, step: +stopStep },
+  }
 }
 
 const ConfigsSettings: FC = () => {
@@ -86,18 +96,9 @@ const ConfigsSettings: FC = () => {
 
   useEffect(() => {
     if (!configs.length) {
-      const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } =
-        defaultConfigsSettings
-
-      const settings: ConfigSettings = {
-        buy: { from: buyFrom, to: buyTo, step: buyStep },
-        sell: { from: sellFrom, to: sellTo, step: sellStep },
-        stop: { from: stopFrom, to: stopTo, step: stopStep },
-      }
-
       const configItem: ConfigItem = {
         data: defaultConfigsSettings,
-        configs: createConfigs(settings),
+        configs: createConfigs(convertDataToSettings(defaultConfigsSettings)),
       }
 
       dispatch(addConfig(configItem))
@@ -106,18 +107,9 @@ const ConfigsSettings: FC = () => {
 
   const onSubmit: SubmitHandler<ConfigsSettingsFormInputs> = (data): void => {
     if (isValid && configsCount > 0) {
-      const { buyFrom, buyTo, buyStep, sellFrom, sellTo, sellStep, stopFrom, stopTo, stopStep } =
-        data
-
-      const settings: ConfigSettings = {
-        buy: { from: buyFrom, to: buyTo, step: buyStep },
-        sell: { from: sellFrom, to: sellTo, step: sellStep },
-        stop: { from: stopFrom, to: stopTo, step: stopStep },
-      }
-
       const configItem: ConfigItem = {
         data,
-        configs: createConfigs(settings),
+        configs: createConfigs(convertDataToSettings(data)),
       }
 
       if (mode === ConfigsSettingsMode.CREATE) {

@@ -4,7 +4,7 @@ import {
   useLazyGetAllSymbolsStatsQuery,
 } from '../../api/symbolStatsApi'
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHelpers'
-import { setSymbols, setMinVolume, selectSymbolsSettings } from '../../redux/symbolsSettingsSlice'
+import { setSymbols, setMinVolume, selectSymbols } from '../../redux/symbolsSlice'
 import SymbolsTable from '../SymbolsTable'
 import { SymbolStatsResponseFull } from '../../types/SymbolStats'
 import InputNumber from '../InputNumber'
@@ -12,7 +12,7 @@ import InputNumber from '../InputNumber'
 const SymbolsSettings: FC = () => {
   const dispatch = useAppDispatch()
 
-  const { symbols, minVolume } = useAppSelector(selectSymbolsSettings)
+  const { symbols, minVolume } = useAppSelector(selectSymbols)
   const [minVolumeFilter, setMinVolumeFilter] = useState<boolean>(!!minVolume)
 
   const { data, isSuccess, isLoading } = useGetAllSymbolsStatsQuery()
